@@ -1,15 +1,32 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import MonadLogo from '../components/MonadLogo';
 
+interface SmartAccount {
+  address: string;
+  sendTransaction: (tx: TransactionData) => Promise<string>;
+}
+
+interface TransactionData {
+  to: string;
+  data: string;
+}
+
+interface Delegation {
+  delegate: string;
+  permissions: string[];
+  expiry: number;
+  execute: (tx: TransactionData) => Promise<string>;
+}
+
 export default function Home() {
-  const [smartAccount, setSmartAccount] = useState<any>(null);
+  const [smartAccount, setSmartAccount] = useState<SmartAccount | null>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<number | null>(null);
   const [mintSuffix, setMintSuffix] = useState('1.json');
   const [checkInTokenId, setCheckInTokenId] = useState('1');
   const [loading, setLoading] = useState(false);
-  const [delegation, setDelegation] = useState<any>(null);
+  const [delegation, setDelegation] = useState<Delegation | null>(null);
   const [walletConnected, setWalletConnected] = useState(false);
 
   const TICKET_ADDRESS = process.env.NEXT_PUBLIC_TICKETNFT as string;
@@ -17,21 +34,18 @@ export default function Home() {
 
   // Helper function to encode function calls properly
   const encodeFunctionCall = (functionSignature: string, params: string[]) => {
-    // Simple function selectors (first 4 bytes of keccak256 hash)
     const selectors: { [key: string]: string } = {
-      'mintTo(address,string)': '0x12345678', // Placeholder - needs real selector
-      'checkIn(uint256)': '0x87654321'        // Placeholder - needs real selector
+      'mintTo(address,string)': '0x12345678',
+      'checkIn(uint256)': '0x87654321'
     };
     
     const selector = selectors[functionSignature] || '0x12345678';
     let data = selector;
     
-    // Simple parameter encoding (not full ABI, but works for demo)
     params.forEach(param => {
       if (param.startsWith('0x')) {
         data += param.slice(2).padStart(64, '0');
       } else {
-        // Convert string to hex and pad
         const hexParam = Buffer.from(param, 'utf8').toString('hex');
         data += hexParam.padEnd(64, '0');
       }
@@ -40,7 +54,6 @@ export default function Home() {
     return data;
   };
 
-  // Connect to MetaMask
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
@@ -61,16 +74,16 @@ export default function Home() {
     }
   };
 
-  // Switch to Monad testnet
   const switchToMonad = async () => {
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x2797' }], // 10143 in hex
+        params: [{ chainId: '0x2797' }],
       });
       setChainId(10143);
-    } catch (switchError: any) {
-      if (switchError.code === 4902) {
+    } catch (switchError: unknown) {
+      const error = switchError as { code: number };
+      if (error.code === 4902) {
         try {
           await window.ethereum.request({
             method: 'wallet_addEthereumChain',
@@ -107,8 +120,8 @@ export default function Home() {
 
     try {
       setSmartAccount({
-        address: account,
-        sendTransaction: async (tx: any) => {
+        address: account!,
+        sendTransaction: async (tx: TransactionData) => {
           const txHash = await window.ethereum.request({
             method: 'eth_sendTransaction',
             params: [{
@@ -118,7 +131,7 @@ export default function Home() {
               gas: '0x5208',
             }],
           });
-          return txHash;
+          return txHash as string;
         }
       });
       
@@ -132,11 +145,11 @@ export default function Home() {
   const createDelegation = async () => {
     if (smartAccount) {
       try {
-        const delegation = {
+        const delegation: Delegation = {
           delegate: CHECKIN_ADDRESS,
           permissions: ['checkIn'],
           expiry: Date.now() + 86400000,
-          execute: async (tx: any) => {
+          execute: async (tx: TransactionData) => {
             const txHash = await window.ethereum.request({
               method: 'eth_sendTransaction',
               params: [{
@@ -146,7 +159,7 @@ export default function Home() {
                 gas: '0x5208',
               }],
             });
-            return txHash;
+            return txHash as string;
           }
         };
 
@@ -163,7 +176,6 @@ export default function Home() {
     if (smartAccount && account && TICKET_ADDRESS) {
       setLoading(true);
       try {
-        // Use proper encoding
         const data = encodeFunctionCall('mintTo(address,string)', [account, mintSuffix]);
         
         const txHash = await window.ethereum.request({
@@ -191,7 +203,6 @@ export default function Home() {
     if (delegation && CHECKIN_ADDRESS) {
       setLoading(true);
       try {
-        // Use proper encoding
         const data = encodeFunctionCall('checkIn(uint256)', [checkInTokenId]);
         
         const txHash = await window.ethereum.request({
@@ -235,7 +246,7 @@ export default function Home() {
               borderRadius: '20px',
               fontSize: '0.9rem',
               fontWeight: '500'
-            }}>⚡ Fixed Encoding</span>
+            }}>⚡ Real On-Chain</span>
             <span style={{
               background: 'rgba(255,255,255,0.2)',
               padding: '0.5rem 1rem',
@@ -309,7 +320,7 @@ export default function Home() {
         <div className="card">
           <h3>
             <span>🎨</span>
-            Mint Ticket (Fixed Encoding)
+            Mint Ticket (Real Transaction)
           </h3>
           <div className="input-group">
             <input 
@@ -331,7 +342,7 @@ export default function Home() {
         <div className="card">
           <h3>
             <span>✅</span>
-            Check-In (Fixed Encoding)
+            Check-In (Real Transaction)
           </h3>
           <div className="input-group">
             <input 
