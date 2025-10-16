@@ -32,28 +32,6 @@ export default function Home() {
   const TICKET_ADDRESS = process.env.NEXT_PUBLIC_TICKETNFT as string;
   const CHECKIN_ADDRESS = process.env.NEXT_PUBLIC_CHECKIN as string;
 
-  // Helper function to encode function calls properly
-  const encodeFunctionCall = (functionSignature: string, params: string[]) => {
-    const selectors: { [key: string]: string } = {
-      'mintTo(address,string)': '0x12345678',
-      'checkIn(uint256)': '0x87654321'
-    };
-    
-    const selector = selectors[functionSignature] || '0x12345678';
-    let data = selector;
-    
-    params.forEach(param => {
-      if (param.startsWith('0x')) {
-        data += param.slice(2).padStart(64, '0');
-      } else {
-        const hexParam = Buffer.from(param, 'utf8').toString('hex');
-        data += hexParam.padEnd(64, '0');
-      }
-    });
-    
-    return data;
-  };
-
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
@@ -172,57 +150,57 @@ export default function Home() {
     }
   };
 
- const mintTicket = async () => {
-  if (smartAccount && account && TICKET_ADDRESS) {
-    setLoading(true);
-    try {
-      // Use a simpler approach - call the contract directly
-      const txHash = await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: account,
-          to: TICKET_ADDRESS,
-          data: '0x', // Empty data for now - just test the connection
-          gas: '0x5208',
-        }],
-      });
-      
-      alert(`Transaction sent! Hash: ${txHash}`);
-      alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
-    } catch (error) {
-      console.error('Mint failed:', error);
-      alert('Mint failed: ' + (error as Error).message);
-    } finally {
-      setLoading(false);
+  const mintTicket = async () => {
+    if (smartAccount && account && TICKET_ADDRESS) {
+      setLoading(true);
+      try {
+        // Simple transaction to test connection
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: account,
+            to: TICKET_ADDRESS,
+            data: '0x', // Empty data for testing
+            gas: '0x5208',
+          }],
+        });
+        
+        alert(`Transaction sent! Hash: ${txHash}`);
+        alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
+      } catch (error) {
+        console.error('Mint failed:', error);
+        alert('Mint failed: ' + (error as Error).message);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
-};
+  };
 
   const checkIn = async () => {
-  if (delegation && CHECKIN_ADDRESS) {
-    setLoading(true);
-    try {
-      // Use a simpler approach - call the contract directly
-      const txHash = await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: account,
-          to: CHECKIN_ADDRESS,
-          data: '0x', // Empty data for now - just test the connection
-          gas: '0x5208',
-        }],
-      });
-      
-      alert(`Transaction sent! Hash: ${txHash}`);
-      alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
-    } catch (error) {
-      console.error('Check-in failed:', error);
-      alert('Check-in failed: ' + (error as Error).message);
-    } finally {
-      setLoading(false);
+    if (delegation && CHECKIN_ADDRESS) {
+      setLoading(true);
+      try {
+        // Simple transaction to test connection
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: account,
+            to: CHECKIN_ADDRESS,
+            data: '0x', // Empty data for testing
+            gas: '0x5208',
+          }],
+        });
+        
+        alert(`Transaction sent! Hash: ${txHash}`);
+        alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
+      } catch (error) {
+        console.error('Check-in failed:', error);
+        alert('Check-in failed: ' + (error as Error).message);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
-};
+  };
 
   return (
     <>
@@ -318,7 +296,7 @@ export default function Home() {
         <div className="card">
           <h3>
             <span>🎨</span>
-            Mint Ticket (Real Transaction)
+            Mint Ticket (Test Transaction)
           </h3>
           <div className="input-group">
             <input 
@@ -332,7 +310,7 @@ export default function Home() {
               onClick={mintTicket} 
               disabled={!smartAccount || loading}
             >
-              {loading ? 'Minting...' : 'Mint Ticket'}
+              {loading ? 'Minting...' : 'Test Mint'}
             </button>
           </div>
         </div>
@@ -340,7 +318,7 @@ export default function Home() {
         <div className="card">
           <h3>
             <span>✅</span>
-            Check-In (Real Transaction)
+            Check-In (Test Transaction)
           </h3>
           <div className="input-group">
             <input 
@@ -355,7 +333,7 @@ export default function Home() {
               onClick={checkIn} 
               disabled={!delegation || loading}
             >
-              {loading ? 'Checking In...' : 'Check In'}
+              {loading ? 'Checking In...' : 'Test Check In'}
             </button>
           </div>
         </div>
