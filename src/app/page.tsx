@@ -172,59 +172,57 @@ export default function Home() {
     }
   };
 
-  const mintTicket = async () => {
-    if (smartAccount && account && TICKET_ADDRESS) {
-      setLoading(true);
-      try {
-        const data = encodeFunctionCall('mintTo(address,string)', [account, mintSuffix]);
-        
-        const txHash = await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            from: account,
-            to: TICKET_ADDRESS,
-            data: data,
-            gas: '0x5208',
-          }],
-        });
-        
-        alert(`Ticket minted! Transaction: ${txHash}`);
-        alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
-      } catch (error) {
-        console.error('Mint failed:', error);
-        alert('Mint failed: ' + (error as Error).message);
-      } finally {
-        setLoading(false);
-      }
+ const mintTicket = async () => {
+  if (smartAccount && account && TICKET_ADDRESS) {
+    setLoading(true);
+    try {
+      // Use a simpler approach - call the contract directly
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: account,
+          to: TICKET_ADDRESS,
+          data: '0x', // Empty data for now - just test the connection
+          gas: '0x5208',
+        }],
+      });
+      
+      alert(`Transaction sent! Hash: ${txHash}`);
+      alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
+    } catch (error) {
+      console.error('Mint failed:', error);
+      alert('Mint failed: ' + (error as Error).message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+};
 
   const checkIn = async () => {
-    if (delegation && CHECKIN_ADDRESS) {
-      setLoading(true);
-      try {
-        const data = encodeFunctionCall('checkIn(uint256)', [checkInTokenId]);
-        
-        const txHash = await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            from: account,
-            to: CHECKIN_ADDRESS,
-            data: data,
-            gas: '0x5208',
-          }],
-        });
-        
-        alert(`Check-in successful! Transaction: ${txHash}`);
-        alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
-      } catch (error) {
-        console.error('Check-in failed:', error);
-        alert('Check-in failed: ' + (error as Error).message);
-      } finally {
-        setLoading(false);
-      }
+  if (delegation && CHECKIN_ADDRESS) {
+    setLoading(true);
+    try {
+      // Use a simpler approach - call the contract directly
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: account,
+          to: CHECKIN_ADDRESS,
+          data: '0x', // Empty data for now - just test the connection
+          gas: '0x5208',
+        }],
+      });
+      
+      alert(`Transaction sent! Hash: ${txHash}`);
+      alert(`View on explorer: https://testnet-explorer.monad.xyz/tx/${txHash}`);
+    } catch (error) {
+      console.error('Check-in failed:', error);
+      alert('Check-in failed: ' + (error as Error).message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+};
 
   return (
     <>
