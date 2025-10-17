@@ -382,9 +382,11 @@ body::before {
   background: rgba(255,255,255,0.5);
 }
 
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .container {
-    padding: 4rem 1rem 1rem;
+    padding: 2rem 1rem 1rem;
+    max-width: 100%;
   }
   
   .logo-container {
@@ -398,38 +400,140 @@ body::before {
   }
   
   .monad-shape {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
   
   .monad-inner {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
   }
   
   .monad-text {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   
   .header h1 {
-    font-size: 2.2rem;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
   }
   
   .header p {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .header div {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .header div span {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
   }
   
   .card {
     padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
   }
   
   .input-group {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
   }
   
   .btn {
     width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .account-info {
+    padding: 1.5rem;
+  }
+  
+  .account-info p {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .contract-address {
     padding: 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .contracts-section {
+    padding: 1.5rem;
+  }
+  
+  .contracts-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Additional mobile-specific styles for very small screens */
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 0.75rem 1rem;
+  }
+  
+  .header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .header p {
+    font-size: 0.85rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .btn {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.85rem;
+  }
+  
+  .input-field {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.85rem;
+  }
+  
+  .monad-logo {
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .monad-shape {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .monad-inner {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .monad-text {
+    font-size: 0.8rem;
   }
 }
