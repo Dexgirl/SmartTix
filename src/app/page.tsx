@@ -28,13 +28,43 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [delegation, setDelegation] = useState<Delegation | null>(null);
   const [walletConnected, setWalletConnected] = useState(false);
+  const [walletType, setWalletType] = useState<string>('');
 
   const TICKET_ADDRESS = process.env.NEXT_PUBLIC_TICKETNFT as string;
   const CHECKIN_ADDRESS = process.env.NEXT_PUBLIC_CHECKIN as string;
 
+  const detectWallet = () => {
+    if (typeof window.ethereum !== 'undefined') {
+      if (window.ethereum.isMetaMask) {
+        return 'MetaMask';
+      } else if (window.ethereum.isRabby) {
+        return 'Rabby';
+      } else if (window.ethereum.isCoinbaseWallet) {
+        return 'Coinbase Wallet';
+      } else if (window.ethereum.isBraveWallet) {
+        return 'Brave Wallet';
+      } else if (window.ethereum.isTrust) {
+        return 'Trust Wallet';
+      } else if (window.ethereum.isFrame) {
+        return 'Frame';
+      } else if (window.ethereum.isTokenPocket) {
+        return 'TokenPocket';
+      } else if (window.ethereum.isBitKeep) {
+        return 'BitKeep';
+      } else if (window.ethereum.isOKExWallet) {
+        return 'OKX Wallet';
+      } else if (window.ethereum.isPhantom) {
+        return 'Phantom';
+      } else {
+        return 'Unknown Wallet';
+      }
+    }
+    return null;
+  };
+
   const connectWallet = async () => {
     // Check if we're on mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Safari/i.test(navigator.userAgent);
     
     if (isMobile) {
       // For mobile, try to open MetaMask app or show instructions
@@ -48,23 +78,25 @@ export default function Home() {
       return;
     }
     
-    // Desktop MetaMask connection
+    // Desktop wallet connection
     if (typeof window.ethereum !== 'undefined') {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        const wallet = detectWallet();
         
         setAccount(accounts[0]);
         setChainId(parseInt(chainId, 16));
         setWalletConnected(true);
+        setWalletType(wallet || 'Unknown Wallet');
         
-        alert('Wallet connected: ' + accounts[0]);
+        alert(`Wallet connected: ${wallet || 'Unknown Wallet'}\nAddress: ${accounts[0]}`);
       } catch (error) {
         console.error('Wallet connection failed:', error);
         alert('Wallet connection failed: ' + (error as Error).message);
       }
     } else {
-      alert('MetaMask not installed! Please install MetaMask browser extension.');
+      alert('No wallet detected! Please install MetaMask, Rabby, Coinbase Wallet, or another compatible wallet.');
     }
   };
 
@@ -276,7 +308,7 @@ export default function Home() {
               borderRadius: '20px',
               fontSize: '0.9rem',
               fontWeight: '500'
-            }}>🔐 MetaMask</span>
+            }}>🔐 Multi-Wallet</span>
             <span style={{
               background: 'rgba(255,255,255,0.2)',
               padding: '0.5rem 1rem',
@@ -293,15 +325,52 @@ export default function Home() {
             Wallet Connection
           </h3>
           {!walletConnected ? (
-            <button className="btn btn-primary" onClick={connectWallet}>
-              {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-                ? 'Open in MetaMask Mobile' 
-                : 'Connect MetaMask Wallet'
-              }
-            </button>
+            <div>
+              <button className="btn btn-primary" onClick={connectWallet}>
+                {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Safari/i.test(navigator.userAgent) 
+                  ? 'Open in MetaMask Mobile' 
+                  : 'Connect Wallet'
+                }
+              </button>
+              <div style={{ 
+                marginTop: '1rem', 
+                padding: '1rem', 
+                background: 'rgba(139, 92, 246, 0.1)', 
+                borderRadius: '12px',
+                border: '1px solid rgba(139, 92, 246, 0.2)'
+              }}>
+                <p style={{ 
+                  fontSize: '0.9rem', 
+                  color: '#6B7280', 
+                  marginBottom: '0.5rem',
+                  fontWeight: '600'
+                }}>
+                  Supported Wallets:
+                </p>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
+                  gap: '0.5rem',
+                  fontSize: '0.8rem',
+                  color: '#4B5563'
+                }}>
+                  <span>• MetaMask</span>
+                  <span>• Rabby</span>
+                  <span>• Coinbase</span>
+                  <span>• Brave Wallet</span>
+                  <span>• Trust Wallet</span>
+                  <span>• Frame</span>
+                  <span>• TokenPocket</span>
+                  <span>• BitKeep</span>
+                  <span>• OKX Wallet</span>
+                  <span>• Phantom</span>
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="account-info">
               <p><strong>Connected:</strong> {account}</p>
+              <p><strong>Wallet:</strong> {walletType}</p>
               <p><strong>Chain ID:</strong> {chainId}</p>
               <p><strong>Network:</strong> {chainId === 10143 ? 'Monad Testnet ✅' : 'Switch to Monad ⚠️'}</p>
               {chainId !== 10143 && (
