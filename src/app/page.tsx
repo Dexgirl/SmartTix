@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import MonadLogo from '../components/MonadLogo';
 import SimpleAnalytics from '../components/SimpleAnalytics';
+import QRCode from 'qrcode.react';
 
 interface SmartAccount {
   address: string;
@@ -30,6 +31,7 @@ export default function Home() {
   const [delegation, setDelegation] = useState<Delegation | null>(null);
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletType, setWalletType] = useState<string>('');
+  const [showQR, setShowQR] = useState(false);
 
   const TICKET_ADDRESS = process.env.NEXT_PUBLIC_TICKETNFT as string;
   const CHECKIN_ADDRESS = process.env.NEXT_PUBLIC_CHECKIN as string;
@@ -68,39 +70,8 @@ export default function Home() {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
-      // For mobile, try multiple approaches
-      const currentUrl = window.location.href;
-      
-      // Try MetaMask mobile deep link
-      const metamaskDeepLink = `https://metamask.app.link/dapp/${window.location.hostname}${window.location.pathname}`;
-      
-      // Try WalletConnect or other mobile wallet solutions
-      const walletConnectUrl = `https://walletconnect.com/wc?uri=${encodeURIComponent(currentUrl)}`;
-      
-      // Show options to user
-      const choice = confirm(
-        'Mobile Wallet Connection:\n\n' +
-        '1. Click OK to open MetaMask Mobile\n' +
-        '2. Click Cancel to see other options\n\n' +
-        'Make sure you have MetaMask Mobile installed!'
-      );
-      
-      if (choice) {
-        // Try MetaMask mobile
-        window.location.href = metamaskDeepLink;
-      } else {
-        // Show QR code or other options
-        alert(
-          'Mobile Wallet Options:\n\n' +
-          '1. Install MetaMask Mobile app\n' +
-          '2. Open this link in MetaMask: ' + metamaskDeepLink + '\n\n' +
-          '3. Or use WalletConnect: ' + walletConnectUrl + '\n\n' +
-          '4. Or scan QR code with your wallet app'
-        );
-        
-        // Try to open WalletConnect
-        window.open(walletConnectUrl, '_blank');
-      }
+      // For mobile, show QR code and options
+      setShowQR(true);
       return;
     }
     
@@ -358,6 +329,66 @@ export default function Home() {
                   : 'Connect Wallet'
                 }
               </button>
+              
+              {showQR && (
+                <div style={{ 
+                  marginTop: '2rem', 
+                  padding: '2rem', 
+                  background: 'rgba(255,255,255,0.95)', 
+                  borderRadius: '16px',
+                  textAlign: 'center',
+                  border: '2px solid #8B5CF6'
+                }}>
+                  <h4 style={{ marginBottom: '1rem', color: '#374151' }}>Mobile Wallet Connection</h4>
+                  <p style={{ marginBottom: '1.5rem', color: '#6B7280' }}>
+                    Scan this QR code with your wallet app:
+                  </p>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    marginBottom: '1.5rem',
+                    padding: '1rem',
+                    background: 'white',
+                    borderRadius: '12px',
+                    border: '1px solid #e5e7eb'
+                  }}>
+                    <QRCode 
+                      value={window.location.href}
+                      size={200}
+                      level="M"
+                      includeMargin={true}
+                    />
+                  </div>
+                  <p style={{ fontSize: '0.9rem', color: '#6B7280', marginBottom: '1rem' }}>
+                    Or open this link in your wallet:
+                  </p>
+                  <div style={{ 
+                    background: '#f3f4f6', 
+                    padding: '0.75rem', 
+                    borderRadius: '8px', 
+                    fontFamily: 'monospace',
+                    fontSize: '0.8rem',
+                    wordBreak: 'break-all',
+                    marginBottom: '1rem'
+                  }}>
+                    {window.location.href}
+                  </div>
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => setShowQR(false)}
+                    style={{ marginRight: '1rem' }}
+                  >
+                    Close
+                  </button>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={() => window.open(window.location.href, '_blank')}
+                  >
+                    Open in Wallet
+                  </button>
+                </div>
+              )}
+              
               <div style={{ 
                 marginTop: '1rem', 
                 padding: '1rem', 
