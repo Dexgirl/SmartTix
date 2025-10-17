@@ -64,7 +64,7 @@ export default function Home() {
 
   const connectWallet = async () => {
     // Check if we're on mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Safari/i.test(navigator.userAgent);
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
       // For mobile, try to open MetaMask app or show instructions
@@ -327,7 +327,7 @@ export default function Home() {
           {!walletConnected ? (
             <div>
               <button className="btn btn-primary" onClick={connectWallet}>
-                {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Safari/i.test(navigator.userAgent) 
+                {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
                   ? 'Open in MetaMask Mobile' 
                   : 'Connect Wallet'
                 }
