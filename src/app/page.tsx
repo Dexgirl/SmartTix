@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import MonadLogo from '../components/MonadLogo';
+import SimpleAnalytics from '../components/SimpleAnalytics';
 
 interface SmartAccount {
   address: string;
@@ -286,7 +287,7 @@ export default function Home() {
       <MonadLogo />
       <div className="container">
         <div className="header">
-          <h1>🎫 SmartTix</h1>
+          <h1> SmartTix</h1>
           <p>Gasless Event Tickets with Smart Accounts on Monad</p>
           <div style={{ 
             marginTop: '1rem', 
@@ -301,27 +302,27 @@ export default function Home() {
               borderRadius: '20px',
               fontSize: '0.9rem',
               fontWeight: '500'
-            }}>⚡ Real On-Chain</span>
+            }}> Real On-Chain</span>
             <span style={{
               background: 'rgba(255,255,255,0.2)',
               padding: '0.5rem 1rem',
               borderRadius: '20px',
               fontSize: '0.9rem',
               fontWeight: '500'
-            }}>🔐 Multi-Wallet</span>
+            }}> Multi-Wallet</span>
             <span style={{
               background: 'rgba(255,255,255,0.2)',
               padding: '0.5rem 1rem',
               borderRadius: '20px',
               fontSize: '0.9rem',
               fontWeight: '500'
-            }}>🎫 Monad Testnet</span>
+            }}> Monad Testnet</span>
           </div>
         </div>
 
         <div className="card">
           <h3>
-            <span>🔗</span>
+            <span></span>
             Wallet Connection
           </h3>
           {!walletConnected ? (
@@ -354,16 +355,16 @@ export default function Home() {
                   fontSize: '0.8rem',
                   color: '#4B5563'
                 }}>
-                  <span>• MetaMask</span>
-                  <span>• Rabby</span>
-                  <span>• Coinbase</span>
-                  <span>• Brave Wallet</span>
-                  <span>• Trust Wallet</span>
-                  <span>• Frame</span>
-                  <span>• TokenPocket</span>
-                  <span>• BitKeep</span>
-                  <span>• OKX Wallet</span>
-                  <span>• Phantom</span>
+                  <span> MetaMask</span>
+                  <span> Rabby</span>
+                  <span> Coinbase</span>
+                  <span> Brave Wallet</span>
+                  <span> Trust Wallet</span>
+                  <span> Frame</span>
+                  <span> TokenPocket</span>
+                  <span> BitKeep</span>
+                  <span> OKX Wallet</span>
+                  <span> Phantom</span>
                 </div>
               </div>
             </div>
@@ -372,7 +373,7 @@ export default function Home() {
               <p><strong>Connected:</strong> {account}</p>
               <p><strong>Wallet:</strong> {walletType}</p>
               <p><strong>Chain ID:</strong> {chainId}</p>
-              <p><strong>Network:</strong> {chainId === 10143 ? 'Monad Testnet ✅' : 'Switch to Monad ⚠️'}</p>
+              <p><strong>Network:</strong> {chainId === 10143 ? 'Monad Testnet ' : 'Switch to Monad '}</p>
               {chainId !== 10143 && (
                 <button className="btn btn-secondary" onClick={switchToMonad} style={{ marginTop: '1rem' }}>
                   Switch to Monad Testnet
@@ -384,7 +385,7 @@ export default function Home() {
 
         <div className="card">
           <h3>
-            <span>🔐</span>
+            <span></span>
             Smart Account Status
           </h3>
           {!smartAccount ? (
@@ -414,7 +415,7 @@ export default function Home() {
 
         <div className="card">
           <h3>
-            <span>🎨</span>
+            <span></span>
             Mint Ticket (Test Transaction)
           </h3>
           <div className="input-group">
@@ -436,7 +437,7 @@ export default function Home() {
 
         <div className="card">
           <h3>
-            <span>✅</span>
+            <span></span>
             Check-In (Test Transaction)
           </h3>
           <div className="input-group">
@@ -459,7 +460,7 @@ export default function Home() {
 
         <div className="card contracts-section">
           <h3>
-            <span>📋</span>
+            <span></span>
             Contract Addresses (Monad Testnet)
           </h3>
           <div className="contract-address">
@@ -471,6 +472,8 @@ export default function Home() {
             {CHECKIN_ADDRESS}
           </div>
         </div>
+
+        <SimpleAnalytics />
       </div>
     </>
   );
