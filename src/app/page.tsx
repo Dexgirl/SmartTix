@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import MonadLogo from '../components/MonadLogo';
 import SimpleAnalytics from '../components/SimpleAnalytics';
-import QRCode from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 interface SmartAccount {
   address: string;
@@ -352,7 +352,7 @@ export default function Home() {
                     borderRadius: '12px',
                     border: '1px solid #e5e7eb'
                   }}>
-                    <QRCode 
+                    <QRCodeCanvas 
                       value={window.location.href}
                       size={200}
                       level="M"
