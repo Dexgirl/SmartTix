@@ -68,14 +68,39 @@ export default function Home() {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
-      // For mobile, try to open MetaMask app or show instructions
+      // For mobile, try multiple approaches
+      const currentUrl = window.location.href;
+      
+      // Try MetaMask mobile deep link
       const metamaskDeepLink = `https://metamask.app.link/dapp/${window.location.hostname}${window.location.pathname}`;
       
-      // Try to open MetaMask app
-      window.open(metamaskDeepLink, '_blank');
+      // Try WalletConnect or other mobile wallet solutions
+      const walletConnectUrl = `https://walletconnect.com/wc?uri=${encodeURIComponent(currentUrl)}`;
       
-      // Show instructions
-      alert('Please open this link in MetaMask mobile app:\n\n' + metamaskDeepLink + '\n\nOr scan the QR code with MetaMask mobile app.');
+      // Show options to user
+      const choice = confirm(
+        'Mobile Wallet Connection:\n\n' +
+        '1. Click OK to open MetaMask Mobile\n' +
+        '2. Click Cancel to see other options\n\n' +
+        'Make sure you have MetaMask Mobile installed!'
+      );
+      
+      if (choice) {
+        // Try MetaMask mobile
+        window.location.href = metamaskDeepLink;
+      } else {
+        // Show QR code or other options
+        alert(
+          'Mobile Wallet Options:\n\n' +
+          '1. Install MetaMask Mobile app\n' +
+          '2. Open this link in MetaMask: ' + metamaskDeepLink + '\n\n' +
+          '3. Or use WalletConnect: ' + walletConnectUrl + '\n\n' +
+          '4. Or scan QR code with your wallet app'
+        );
+        
+        // Try to open WalletConnect
+        window.open(walletConnectUrl, '_blank');
+      }
       return;
     }
     
@@ -329,7 +354,7 @@ export default function Home() {
             <div>
               <button className="btn btn-primary" onClick={connectWallet}>
                 {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-                  ? 'Open in MetaMask Mobile' 
+                  ? 'Connect Mobile Wallet' 
                   : 'Connect Wallet'
                 }
               </button>
