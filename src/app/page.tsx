@@ -33,6 +33,22 @@ export default function Home() {
   const CHECKIN_ADDRESS = process.env.NEXT_PUBLIC_CHECKIN as string;
 
   const connectWallet = async () => {
+    // Check if we're on mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // For mobile, try to open MetaMask app or show instructions
+      const metamaskDeepLink = `https://metamask.app.link/dapp/${window.location.hostname}${window.location.pathname}`;
+      
+      // Try to open MetaMask app
+      window.open(metamaskDeepLink, '_blank');
+      
+      // Show instructions
+      alert('Please open this link in MetaMask mobile app:\n\n' + metamaskDeepLink + '\n\nOr scan the QR code with MetaMask mobile app.');
+      return;
+    }
+    
+    // Desktop MetaMask connection
     if (typeof window.ethereum !== 'undefined') {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -48,19 +64,24 @@ export default function Home() {
         alert('Wallet connection failed: ' + (error as Error).message);
       }
     } else {
-      alert('MetaMask not installed!');
+      alert('MetaMask not installed! Please install MetaMask browser extension.');
     }
   };
 
   const switchToMonad = async () => {
     try {
+      // First, try to switch to the existing network
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x2797' }],
+        params: [{ chainId: '0x2797' }], // 10143 in hex
       });
       setChainId(10143);
+      console.log('Successfully switched to Monad testnet');
     } catch (switchError: unknown) {
+      console.log('Network not found, adding Monad testnet...');
       const error = switchError as { code: number };
+      
+      // If network doesn't exist, add it
       if (error.code === 4902) {
         try {
           await window.ethereum.request({
@@ -75,13 +96,25 @@ export default function Home() {
                 decimals: 18,
               },
               blockExplorerUrls: ['https://testnet-explorer.monad.xyz'],
+              iconUrls: ['https://monad.xyz/favicon.ico'], // Add icon for better UX
             }],
           });
+          
+          // After adding, switch to it
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x2797' }],
+          });
+          
           setChainId(10143);
+          console.log('Successfully added and switched to Monad testnet');
         } catch (addError) {
           console.error('Failed to add Monad network:', addError);
-          alert('Failed to add Monad network');
+          alert('Failed to add Monad network. Please add it manually in your wallet.');
         }
+      } else {
+        console.error('Failed to switch to Monad network:', switchError);
+        alert('Failed to switch to Monad network. Please switch manually in your wallet.');
       }
     }
   };
@@ -92,11 +125,25 @@ export default function Home() {
       return;
     }
 
-    if (chainId !== 10143) {
-      await switchToMonad();
-    }
-
     try {
+      // Always try to switch to Monad testnet first
+      if (chainId !== 10143) {
+        console.log('Switching to Monad testnet...');
+        await switchToMonad();
+        
+        // Wait a moment for the network switch to complete
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Double-check the network
+        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+        const currentChainIdNumber = parseInt(currentChainId, 16);
+        
+        if (currentChainIdNumber !== 10143) {
+          alert('Please switch to Monad testnet manually in your wallet and try again.');
+          return;
+        }
+      }
+
       setSmartAccount({
         address: account!,
         sendTransaction: async (tx: TransactionData) => {
@@ -247,7 +294,10 @@ export default function Home() {
           </h3>
           {!walletConnected ? (
             <button className="btn btn-primary" onClick={connectWallet}>
-              Connect MetaMask Wallet
+              {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                ? 'Open in MetaMask Mobile' 
+                : 'Connect MetaMask Wallet'
+              }
             </button>
           ) : (
             <div className="account-info">
