@@ -12,6 +12,7 @@
     "@metamask/delegation-toolkit": "^0.13.0",
     "@openzeppelin/contracts": "^5.4.0",
     "@tanstack/react-query": "^5.90.2",
+    "@walletconnect/web3-provider": "^1.8.0",
     "next": "15.5.4",
     "qrcode.react": "^4.2.0",
     "react": "19.1.0",
