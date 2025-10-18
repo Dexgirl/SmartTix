@@ -8,12 +8,12 @@ SmartTix is a next-generation event ticketing platform that eliminates gas fees 
 
 ##  Key Features
 
-- ** Gasless Transactions** - Users don't pay gas fees
-- ** Smart Account Integration** - MetaMask Smart Accounts support
-- ** NFT Tickets** - ERC-721 based event tickets
-- ** Check-in System** - Delegation-based verification
-- ** Real-time Analytics** - Live ticket sales and check-in data
-- ** Multi-Wallet Support** - Works with MetaMask, Rabby, Coinbase, and more
+- **Gasless Transactions** - Users don't pay gas fees
+- **Smart Account Integration** - MetaMask Smart Accounts support
+- **NFT Tickets** - ERC-721 based event tickets
+- **Check-in System** - Delegation-based verification
+- **Real-time Analytics** - Live ticket sales and check-in data
+- **Multi-Wallet Support** - Works with MetaMask, Rabby, Coinbase, and more
 
 ##  Live Demo
 
