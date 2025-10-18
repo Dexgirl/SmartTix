@@ -70,7 +70,7 @@ export default function Home() {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
-      // For mobile, show QR code and options
+      // For mobile, show instructions and QR code
       setShowQR(true);
       return;
     }
@@ -341,8 +341,11 @@ export default function Home() {
                 }}>
                   <h4 style={{ marginBottom: '1rem', color: '#374151' }}>Mobile Wallet Connection</h4>
                   <p style={{ marginBottom: '1.5rem', color: '#6B7280' }}>
-                    Scan this QR code with your wallet app:
+                    <strong>For Mobile Users:</strong><br />
+                    This app works best on desktop with browser extensions.<br />
+                    On mobile, you can view the analytics and explore the interface.
                   </p>
+                  
                   <div style={{ 
                     display: 'flex', 
                     justifyContent: 'center', 
@@ -359,9 +362,14 @@ export default function Home() {
                       includeMargin={true}
                     />
                   </div>
+                  
                   <p style={{ fontSize: '0.9rem', color: '#6B7280', marginBottom: '1rem' }}>
-                    Or open this link in your wallet:
+                    <strong>To use on mobile:</strong><br />
+                    1. Open this link in MetaMask Mobile browser<br />
+                    2. Or scan the QR code with your wallet<br />
+                    3. Or use desktop for full functionality
                   </p>
+                  
                   <div style={{ 
                     background: '#f3f4f6', 
                     padding: '0.75rem', 
@@ -373,6 +381,7 @@ export default function Home() {
                   }}>
                     {window.location.href}
                   </div>
+                  
                   <button 
                     className="btn btn-secondary" 
                     onClick={() => setShowQR(false)}
@@ -384,7 +393,7 @@ export default function Home() {
                     className="btn btn-primary" 
                     onClick={() => window.open(window.location.href, '_blank')}
                   >
-                    Open in Wallet
+                    Open in MetaMask Mobile
                   </button>
                 </div>
               )}
